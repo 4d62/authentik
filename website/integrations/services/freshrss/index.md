@@ -18,56 +18,43 @@ sidebar_label: FreshRSS
 The following placeholders are used in this guide:
 
 - `freshrss.company` is the FQDN of the FreshRSS installation.
-- `port` is the port on which the FreshRSS install is running (usually 443)
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
 :::
 
 ## authentik configuration
 
-1. Create an **OAuth2/OpenID Provider** under **Applications** > **Providers** using the following settings:
-
-    - **Name**: FreshRSS
-    - **Authorization flow**: default-provider-authorization-explicit-consent
-    - **Protocol Settings**:
-        - **Client Type**: Confidential
-        - **Client ID**: Either create your own Client ID or use the auto-populated ID
-        - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
-          :::note
-          Take note of the `Client ID` and `Client Secret`, you'll need them later.
-          :::
-    - **Redirect URIs/Origins**:
-        - `https://freshrss.company/i/oidc/`
-        - `https://freshrss.company:port/i/oidc`
-    - **Signing Key**: Any of your signing keys
-    - Leave everything else as default
-
-2. Create an **Application** under **Applications** > **Applications** using the following settings:
-    - **Name**: FreshRSS
-    - **Slug**: freshrss
-    - **Provider**: FreshRSS _(the provider you created in step 1)_
-    - Leave everything else as default
+1. From the **authentik Admin interface**, navigate to **Applications** -> **Applications**.
+2. Use the [wizard](https://docs.goauthentik.io/docs/add-secure-apps/applications/manage_apps#add-new-applications) to create a new application and a **OAuth2/OpenID Connect provider**. During this process:
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Add two `Strict` redirect URI and set them to <kbd>https://<em>freshrss.company</em>/i/oidc/</kbd> and <kbd>https://<em>freshrss.company:443</em>/i/oidc/</kbd>. If FreshRSS is exposed on a port other than `443`, update the second redirect URI accordingly.
+    - Select any available signing key.
 
 ## FreshRSS configuration
 
 :::info
-This integration only works with the Docker or Kubernetes install of FreshRSS, using [FreshRSS docker image](https://hub.docker.com/r/freshrss/freshrss/), on x86_64 systems and without the Alpine version of the image. More information can be found on [this issue on FreshRSS GitHub](https://github.com/FreshRSS/FreshRSS/issues/5722)
+This integration is compatible only with Docker or Kubernetes installations of FreshRSS that use the [FreshRSS Docker image](https://hub.docker.com/r/freshrss/freshrss/) on x86_64 systems. Note that the Alpine version of the image is not supported. For more details, see [this issue on the FreshRSS GitHub repository](https://github.com/FreshRSS/FreshRSS/issues/5722).
 :::
 
-Add those environment variables to your _Docker_ image :
+To enable OIDC login with FreshRSS, update your `.env` file with the following variables:
 
-- `OIDC_ENABLED` : `1`
-- `OIDC_PROVIDER_METADATA_URL` : `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration` replacing `<application-slug>` with the slug of your created application
-- `OIDC_CLIENT_ID` : the client ID of your provider
-- `OIDC_CLIENT_SECRET` : the client secret of your provider
-- `OIDC_X_FORWARDED_HEADERS` : `X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host`
-- `OIDC_SCOPES` : `openid email profile`
+```
+OIDC_ENABLED=1
+OIDC_PROVIDER_METADATA_URL=https://<em>authentik.company</em>/application/o/<em>application-slug</em>/.well-known/openid-configuration
+OIDC_CLIENT_ID=<em>Your Client ID</em>
+OIDC_CLIENT_SECRET=<em>Your Client Secret</em>
+OIDC_X_FORWARDED_HEADERS=X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host
+OIDC_SCOPES=openid email profile
+```
 
-Before restarting your Docker container, ensure that one of the Admin users of your FreshRSS instance has the same login as one of your Authentik user.
+:::warning
+Before restarting your Docker container, ensure that at least one Admin user in your FreshRSS instance has a username that matches an authentik user.
+:::
 
-Restart your FreshRSS container, and login as a user that exists on both FreshRSS and your Authentik.
-Navigate to _Settings_ > _Authentication_ in your FreshRSS instance, and choose as an authentication method _HTTP (for advanced users with HTTPS)_
+Restart your FreshRSS container, then log in as a user that exists in both FreshRSS and authentik.
 
-You can find additional information on [FreshRSS documentation](https://freshrss.github.io/FreshRSS/en/admins/16_OpenID-Connect.html)
+Go to **Settings** -> **Authentication** in your FreshRSS instance and set the authentication method to **HTTP**.
+
+Additional configuration options can be found in the [FreshRSS documentation for OpenID Connect](https://freshrss.github.io/FreshRSS/en/admins/16_OpenID-Connect.html).

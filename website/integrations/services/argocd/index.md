@@ -21,47 +21,24 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
 :::
 
 ## authentik Configuration
 
-### Step 1 - Provider creation
+### Wizard configuration
 
-In authentik, create an _OAuth2/OpenID Provider_ (under _Applications/Providers_) with these settings:
+1. From the **authentik Admin interface**, navigate to **Applications** -> **Applications**.
+2. Use the wizard to create a new application and with an **OAuth2/OpenID** provider. During this process:
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Add two `Strict` redirect URIs and set them to `https://argocd.company/api/dex/callback` and `http://localhost:8085/auth/callback`.
+    - Select any available signing key.
 
-- Name: ArgoCD
-- Client Type: `Confidential`
-- Signing Key: Select any available key
-- Redirect URIs:
+### ArgoCD group creation
 
-```
-https://argocd.company/api/dex/callback
-http://localhost:8085/auth/callback
-```
+Using the **authentik Admin interface**, go to **Directory** -> **Groups** and click **Create**. ArgoCD lets you to set up administrator users and read-only users by creating groups named `ArgoCD Admins` and `ArgoCD Viewers`.
 
-After creating the provider, take note of the `Client ID` and `Client Secret`, you'll need to give them to ArgoCD in the _ArgoCD Configuration_ field.
-
-### Step 2 - Application creation
-
-Create a new _Application_ (under _Applications/Applications_) with these settings:
-
-- Name: ArgoCD
-- Provider: ArgoCD
-- Slug: argocd
-- Launch URL: https://argocd.company/auth/login
-
-### Step 3 - ArgoCD Group creation
-
-Create a new _Group_ (under _Directory/Groups_) that'll be used as the admin group for ArgoCD (if you already have an "admin" group, you can skip this part!)
-
-- Name: ArgoCD Admins
-- Members: Add your user and/or any user that should be an ArgoCD admin
-
-You can create another group for read-only access to ArgoCD as well if desired:
-
-- Name: ArgoCD Viewers
-- Members: Any user that should have ArgoCD read-only access
+After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed.
 
 ## Terraform provider
 
