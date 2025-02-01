@@ -20,12 +20,23 @@ const IntegrationsMultilineCodeblock: React.FC<
         className: "",
     });
 
+    const getTextContent = (nodes: ReactNode): string => {
+        return React.Children.toArray(nodes).reduce((acc: string, node) => {
+            if (typeof node === "string") {
+                return acc + node;
+            } else if (isValidElement(node)) {
+                return acc + getTextContent(node.props.children);
+            } else if (typeof node === "number") {
+                return acc + String(node);
+            }
+            return acc;
+        }, "");
+    };
+
     const processContent: ContentProcessor = (children) => {
-        return React.Children.toArray(children)
-            .map((child): string => (typeof child === "string" ? child : ""))
-            .join("")
-            .replace(/\n\s+/g, "\n")
-            .trim();
+        const text = getTextContent(children);
+        const textWithoutTags = text.replace(/<[^>]+>/g, "");
+        return textWithoutTags.replace(/\n\s+/g, "\n").trim();
     };
 
     const content: string = processContent(children);
@@ -62,7 +73,16 @@ const IntegrationsMultilineCodeblock: React.FC<
 
     return (
         <pre className={`integration-codeblock ${className}`.trim()}>
-            <code className="integration-codeblock__content">{children}</code>
+            {typeof children === "string" ? (
+                <code
+                    className="integration-codeblock__content"
+                    dangerouslySetInnerHTML={{ __html: children }}
+                />
+            ) : (
+                <code className="integration-codeblock__content">
+                    {children}
+                </code>
+            )}
             <button
                 onClick={handleCopy}
                 className={`integration-codeblock__copy-btn ${copyState.className}`.trim()}
