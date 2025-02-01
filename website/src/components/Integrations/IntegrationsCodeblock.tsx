@@ -12,6 +12,8 @@ type CopyButtonState = {
 
 type ContentProcessor = (children: ReactNode) => string;
 
+const allowedTags = ["em", "code", "pre"];
+
 const IntegrationsMultilineCodeblock: React.FC<
     IntegrationsMultilineCodeblockProps
 > = ({ children, className = "" }) => {
@@ -35,8 +37,18 @@ const IntegrationsMultilineCodeblock: React.FC<
 
     const processContent: ContentProcessor = (children) => {
         const text = getTextContent(children);
-        const textWithoutTags = text.replace(/<[^>]+>/g, "");
-        return textWithoutTags.replace(/\n\s+/g, "\n").trim();
+
+        const sanitizedText = text.replace(
+            /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+            (match, tag) => {
+                if (allowedTags.includes(tag.toLowerCase())) {
+                    return match;
+                }
+                return "";
+            },
+        );
+
+        return sanitizedText.replace(/\n\s+/g, "\n").trim();
     };
 
     const content: string = processContent(children);
@@ -76,7 +88,7 @@ const IntegrationsMultilineCodeblock: React.FC<
             {typeof children === "string" ? (
                 <code
                     className="integration-codeblock__content"
-                    dangerouslySetInnerHTML={{ __html: children }}
+                    dangerouslySetInnerHTML={{ __html: content }}
                 />
             ) : (
                 <code className="integration-codeblock__content">
