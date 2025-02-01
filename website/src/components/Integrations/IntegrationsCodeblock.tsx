@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useState, isValidElement } from "react";
 
 type IntegrationsMultilineCodeblockProps = {
     children: ReactNode;
