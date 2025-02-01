@@ -13,135 +13,158 @@ sidebar_label: Amazon Web Services
 >
 > -- https://www.aboutamazon.com/what-we-do/amazon-web-services
 
-## Choose Your Integration Method
+## Integration Methods
 
-There are two primary methods to integrate authentik with AWS:
+authentik supports two primary methods for AWS integration:
 
-1. **Classic IAM (SAML)** – The traditional method of integrating using SAML-based authentication.
-2. **IAM Identity Center (AWS SSO)** – A newer, simplified method for managing user access.
+1. **Classic IAM (SAML)**: Traditional SAML-based authentication integration
+2. **IAM Identity Center (AWS SSO)**: Modern, streamlined access management solution
 
 ## Method 1: Classic IAM (SAML Integration)
 
-### authentik Configuration
+NEEDS NEW FORMAT
+<!-- ### authentik Configuration
 
-1. **Create an Application**: Create an application in authentik and note the **slug**, which will be used later.
-2. **Create a SAML Provider**: Set up a SAML provider with these configurations:
+1. Create a new application in authentik
+   - Note the application **slug** for later use
 
-    - **ACS URL**: `https://signin.aws.amazon.com/saml`
-    - **Issuer**: `authentik`
-    - **Binding**: `Post`
-    - **Audience**: `urn:amazon:webservices`
-      You can choose a custom signing certificate and adjust duration settings as necessary. !!!!!TODO WIZARD
+2. Set up a SAML provider with these settings:
+   - ACS URL: `https://signin.aws.amazon.com/saml`
+   - Issuer: `authentik`
+   - Binding: `Post`
+   - Audience: `urn:amazon:webservices`
 
-3. **Configure Property Mappings**: Customize property mappings as needed for your AWS integration.
+3. Configure Property Mappings
 
-#### Role Mapping
+#### Role Mapping Configuration
 
-!!!!!TODO: WHERE/HOW
+Set up role mapping by configuring the SAML Name field to `https://aws.amazon.com/SAML/Attributes/Role`. Choose one of these mapping approaches:
 
-The **Role Mapping** specifies the AWS ARN(s) of the identity provider and the role the user should assume. Set the **SAML Name** field to `https://aws.amazon.com/SAML/Attributes/Role`. Below are several examples for role mapping:
+**Static ARN Mapping**:
+```python
+return "arn:aws:iam::123412341234:role/saml_role,arn:aws:iam::123412341234:saml-provider/authentik"
+```
 
-- **Static ARN Mapping**:
+**Group-Based Role Mapping**:
+```python
+role_name = user.group_attributes().get("aws_role", "")
+return f"arn:aws:iam::123412341234:role/{role_name},arn:aws:iam::123412341234:saml-provider/authentik"
+```
 
-    ```python
-    return "arn:aws:iam::123412341234:role/saml_role,arn:aws:iam::123412341234:saml-provider/authentik"
-    ```
+**Multiple Role Mapping**:
+```python
+return [
+    "arn:aws:iam::123412341234:role/role_a,arn:aws:iam::123412341234:saml-provider/authentik",
+    "arn:aws:iam::123412341234:role/role_b,arn:aws:iam::123412341234:saml-provider/authentik",
+    "arn:aws:iam::123412341234:role/role_c,arn:aws:iam::123412341234:saml-provider/authentik",
+]
+```
 
-- **Role Mapping Based on Group Membership**:
+#### Session Name Configuration
 
-    ```python
-    role_name = user.group_attributes().get("aws_role", "")
-    return f"arn:aws:iam::123412341234:role/{role_name},arn:aws:iam::123412341234:saml-provider/authentik"
-    ```
-
-- **Multiple Role Mapping**:
-
-    ```python
-    return [
-        "arn:aws:iam::123412341234:role/role_a,arn:aws:iam::123412341234:saml-provider/authentik",
-        "arn:aws:iam::123412341234:role/role_b,arn:aws:iam::123412341234:saml-provider/authentik",
-        "arn:aws:iam::123412341234:role/role_c,arn:aws:iam::123412341234:saml-provider/authentik",
-    ]
-    ```
-
-#### Role Session Name Mapping
-
-The **RoleSessionName Mapping** defines the name shown in the AWS Management Console. Set the **SAML Name** field to `https://aws.amazon.com/SAML/Attributes/RoleSessionName`. To use the user's username, use this expression:
+Configure the RoleSessionName by setting the SAML Name field to `https://aws.amazon.com/SAML/Attributes/RoleSessionName`. To use the authenticated user's username:
 
 ```python
 return user.username
-```
+``` -->
 
 ### AWS Configuration
 
-1. **Create a Role**: In AWS, create a role with the desired permissions, and note its **ARN**. !!!!!TODO: HOW
-2. **Identity Provider**: Export the metadata from authentik and create a new Identity Provider in AWS by visiting [IAM Providers](https://console.aws.amazon.com/iam/home#/providers).
-3. **Property Mappings**: After creating the role, ensure that the property mappings from authentik are applied correctly in AWS.
+1. Create an IAM Role
+   - Navigate to the IAM console -- URL
+   - Create a new role with appropriate permissions
+   - Save the role's ARN for later use
 
-For further instructions, refer to the [AWS IAM Documentation on SAML](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_saml_assertions.html).
+2. Set up Identity Provider
+   - Go to [IAM Providers](https://console.aws.amazon.com/iam/home#/providers)
+   - Create a new provider using the authentik metadata
+   - Follow the AWS console prompts to complete the setup
+
+For additional details, consult the [AWS IAM Documentation on SAML](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_saml_assertions.html).
 
 ## Method 2: IAM Identity Center (AWS SSO)
 
-### authentik Configuration
+NEEDS NEW FORMAT + SINCE ITS THE AWS METADATA IT SHOULD GO AFTER AWS CFG
+<!-- ### authentik Configuration
 
-1. **Create a SAML Provider**: In authentik, navigate to **Providers**, click **Create**, and select **SAML Provider from metadata**. Upload the metadata file provided by AWS.
-2. **Configure the Provider**: Set the **Audience** field to the **Issuer URL** from AWS. Under **Advanced Protocol Settings**, configure the **Signing Certificate**.
-3. **Download Metadata and Certificate**: After setting up, download the **Metadata file** and **Signing Certificate**. !!!!!TODO WIZARD
+1. Create SAML Provider
+   - Navigate to **Providers** > **Create**
+   - Select **SAML Provider from metadata**
+   - Upload the AWS-provided metadata file
 
-For more detailed steps, refer to [AWS IAM Identity Center Federation Setup](https://docs.aws.amazon.com/singlesignon/latest/userguide/federation.html).
+2. Configure Provider Settings
+   - Set **Audience** to match AWS Issuer URL
+   - Configure **Signing Certificate** in Advanced Protocol Settings
+   - Download the **Metadata file** and **Signing Certificate** -->
 
 ### AWS Configuration
 
-1. **Change Identity Source**: In AWS, !!!!!TODO FROM THE MAIN DASH go to **IAM Identity Center -> Settings -> Identity Source (tab)**. Click **Actions** -> **Change identity source** and choose **External Identity Provider**.
-2. **Upload Metadata and Certificate**: Upload both the **Metadata file** and **Signing Certificate** from authentik into AWS.
-3. **Authentication Settings**: In AWS, under **IAM Identity Center -> Settings**, click **Manage Authentication**. Note the AWS access portal sign-in URL.
+1. Set Identity Source
+   - Access IAM Identity Center through AWS Console
+   - Navigate to **Settings** > **Identity Source**
+   - Select **Actions** > **Change identity source**
+   - Choose **External Identity Provider**
 
-For more on configuring AWS, refer to [AWS IAM Identity Center Documentation](https://docs.aws.amazon.com/singlesignon/latest/userguide/identity-source.html).
+2. Complete Provider Setup
+   - Upload the authentik metadata file and signing certificate
+   - Configure authentication settings
+   - Note the AWS access portal URL
 
-## Optional: SCIM for Automated Provisioning
+For more information, see the [AWS IAM Identity Center Documentation](https://docs.aws.amazon.com/singlesignon/latest/userguide/identity-source.html).
 
-SCIM (System for Cross-domain Identity Management) allows you to automate the synchronization of users, groups, and attributes between authentik and AWS.
+## SCIM Integration (Optional)
 
-### authentik Configuration
+Enable automated user provisioning between authentik and AWS using SCIM.
 
-Navigate to **Providers** -> **Create**
+NEEDS NEW FORMAT
+<!-- ### authentik SCIM Setup
 
-- Select **SCIM Provider**
-- Give it a name, under **URL** enter the **SCIM Endpoint**, and then under **Token** enter the **Access Token** AWS provided you with.
-- Optionally, change the user filtering settings to your liking. Click **Finish**
+1. Create SCIM Provider
+   - Go to **Providers** > **Create** > **SCIM Provider**
+   - Configure with AWS SCIM endpoint and access token
+   - Set desired user filtering options
 
-- Go to **Customization -> Property Mappings**
-- Click **Create -> SCIM Mapping**
-- Make sure to give the mapping a name that's lexically lower THE WHAT? than `authentik default`, for example `AWS SCIM User mapping`
-- As the expression, enter:
+2. Configure Property Mapping
+   - Navigate to **Customization** > **Property Mappings**
+   - Create new SCIM mapping
+   - Use a name lexically preceding "authentik default" (e.g., "AWS SCIM User mapping")
+   - Add the following expression:
 
 ```python
-# This expression strips the default mapping from its 'photos' attribute,
-# which is a forbidden property in AWS IAM.
+# Remove 'photos' attribute (not supported by AWS IAM)
 return {
     "photos": None,
 }
 ```
 
-1. **Enable SCIM**: In AWS, navigate to **Settings** and enable **Automatic Provisioning**. AWS will provide the **SCIM Endpoint** and **Access Token**.
-2. **Sync Users**: Once configured, the SCIM provider will automatically sync users and groups between authentik and AWS IAM. You can trigger manual sync by going to the SCIM provider and clicking **Run sync again**.
+3. Update Provider Settings
+   - Edit the SCIM provider
+   - Add both the default and new mapping under User Property Mappings
+   - Save changes -->
 
-- Click **Save**. Navigate back to your SCIM provider, click **Edit**
-- Under **User Property Mappings** select the default mapping and the mapping that you just created.
-- Click **Update**
-  For more on SCIM, refer to the [AWS SCIM Documentation](https://docs.aws.amazon.com/singlesignon/latest/userguide/scim.html).
+### AWS SCIM Setup
 
-### AWS Configuration
+1. Enable Automatic Provisioning
+   - Access Settings in AWS console
+   - Enable SCIM provisioning
+   - Save the provided endpoint and access token
 
-1. **Enable SCIM**: In AWS, navigate to **Settings** and enable **Automatic Provisioning**. AWS will provide the **SCIM Endpoint** and **Access Token**.
-2. **Sync Users**: Once configured, the SCIM provider will automatically sync users and groups between authentik and AWS IAM. You can trigger manual sync by going to the SCIM provider and clicking **Run sync again**.
+2. Verify Configuration
+   - Check user synchronization status
+   - Test user provisioning
+   - Monitor CloudTrail logs for any issues
 
-For more on SCIM, refer to the [AWS SCIM Documentation](https://docs.aws.amazon.com/singlesignon/latest/userguide/scim.html).
+### Important Notes
 
-:::info
-Ensure users already exist in AWS for successful authentication via authentik. AWS will throw an error if the user is not found. !!!!!TODO THIS IS TECHNICALLY A DIFFERENT THING For troubleshooting, check Amazon CloudTrail logs for `ExternalIdPDirectoryLogin`.
-:::
+- Ensure users exist in AWS before attempting authentication
+- SCIM sync occurs automatically for user/group changes
+- Manual sync available through SCIM provider interface
+- Monitor CloudTrail logs for troubleshooting (look for `ExternalIdPDirectoryLogin` events)
 
-!!!!!TODO VERIFICIATION STEP
+## Verification
 
-ADD The SCIM provider syncs automatically whenever you create/update/remove users, groups, or group membership. You can manually sync by going to your SCIM provider and clicking **Run sync again**. After the SCIM provider has synced, you should see the users and groups in your AWS IAM center.
+After completing the integration:
+1. Test user login through authentik
+2. Verify proper role assignment in AWS
+3. Check SCIM synchronization if enabled
+4. Monitor logs for any authentication issues
