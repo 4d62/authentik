@@ -21,20 +21,24 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik configuration
 
-1. From the **authentik Admin interface**, navigate to **Applications** -> **Applications**.
-2. Use the [wizard](https://docs.goauthentik.io/docs/add-secure-apps/applications/manage_apps#add-new-applications) to create a new application and a **OAuth2/OpenID Connect provider**. During this process:
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>actual.company</em>/openid/callback/</kbd>.
-    - Select any available signing key.
+To support the integration of Actual Budget with authentik, you need to create an application/provider pair in authentik.
 
-:::info
-Actual Budget only supports the RS256 algorithm. Be aware of this when choosing the appropriate signing key.
-:::
+**Create an application and provider in authentik**
+
+In the authentik Admin Interface, navigate to **Applications** > **Applications** and click **[Create with Provider](/docs/add-secure-apps/applications/manage_apps#add-new-applications)** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>actual.company</em>/openid/callback/</kbd>.
+    - Select any available signing key. Actual Budget only supports the RS256 algorithm. Be aware of this when choosing a signing key.
+- **Configure Bindings** _(optional):_ you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user’s **My applications** page.
 
 ## Actual Budget configuration
 

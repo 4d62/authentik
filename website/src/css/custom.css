@@ -171,3 +171,71 @@ body {
         display: none;
     }
 }
+
+/*#region Integration Guide Codeblocks*/
+
+/* Base styles */
+.integration-codeblock {
+    position: relative;
+    background: #f8f8f8;
+    border-radius: 6px;
+    font-family: monospace;
+    margin: 1rem 0;
+    padding: 1.5rem;
+    display: block;
+    overflow-x: auto;
+}
+
+/* Copy button */
+.integration-codeblock__copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #666;
+}
+
+.integration-codeblock__copy-icons {
+    display: block;
+    position: relative;
+    width: 24px;
+    height: 24px;
+}
+
+.integration-codeblock__copy-icon,
+.integration-codeblock__copy-success-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.2s ease;
+}
+
+.integration-codeblock__copy-success-icon {
+    opacity: 0;
+}
+
+.integration-codeblock__copy-btn--copied .integration-codeblock__copy-icon {
+    opacity: 0;
+}
+
+.integration-codeblock__copy-btn--copied
+    .integration-codeblock__copy-success-icon {
+    opacity: 1;
+    color: #4caf50;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .integration-codeblock {
+        background: #2d2d2d;
+        color: #fff;
+    }
+
+    .integration-codeblock__copy-btn {
+        color: #999;
+    }
+}
+/*#endregion*/

@@ -105,6 +105,7 @@ SCIM (System for Cross-domain Identity Management) allows you to automate the sy
 ### authentik Configuration
 
 Navigate to **Providers** -> **Create**
+
 - Select **SCIM Provider**
 - Give it a name, under **URL** enter the **SCIM Endpoint**, and then under **Token** enter the **Access Token** AWS provided you with.
 - Optionally, change the user filtering settings to your liking. Click **Finish**
@@ -121,13 +122,14 @@ return {
     "photos": None,
 }
 ```
+
 1. **Enable SCIM**: In AWS, navigate to **Settings** and enable **Automatic Provisioning**. AWS will provide the **SCIM Endpoint** and **Access Token**.
 2. **Sync Users**: Once configured, the SCIM provider will automatically sync users and groups between authentik and AWS IAM. You can trigger manual sync by going to the SCIM provider and clicking **Run sync again**.
 
 - Click **Save**. Navigate back to your SCIM provider, click **Edit**
 - Under **User Property Mappings** select the default mapping and the mapping that you just created.
 - Click **Update**
-For more on SCIM, refer to the [AWS SCIM Documentation](https://docs.aws.amazon.com/singlesignon/latest/userguide/scim.html).
+  For more on SCIM, refer to the [AWS SCIM Documentation](https://docs.aws.amazon.com/singlesignon/latest/userguide/scim.html).
 
 ### AWS Configuration
 

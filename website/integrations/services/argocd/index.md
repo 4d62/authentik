@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik Configuration
