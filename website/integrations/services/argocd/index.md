@@ -47,6 +47,7 @@ Using the authentik Admin interface, navigate to **Directory** -> **Groups** and
 After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed.
 
 TODO: It's in kubernetes config so it's not in the ui or anything. I'll fix this later
+
 ## ArgoCD Configuration
 
 :::note

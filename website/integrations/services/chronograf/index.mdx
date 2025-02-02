@@ -3,6 +3,8 @@ title: Integrate with Chronograf
 sidebar_label: Chronograf
 ---
 
+import IntegrationsMultilineCodeblock from "@site/src/components/Integrations/IntegrationsCodeblock";
+
 # Integrate with Chronograf
 
 <span class="badge badge--secondary">Support level: Community</span>
@@ -48,10 +50,8 @@ Add the following environment variables to your Chronograf setup. If you are usi
 Refer to the [Chronograf configuration options documentation](https://docs.influxdata.com/chronograf/v1/administration/config-options/) for more information.
 :::
 
-import IntegrationsMultilineCodeblock from "@site/src/components/Integrations/IntegrationsCodeblock"
-
 <IntegrationsMultilineCodeblock>
-{`
+    {`
 PUBLIC_URL=https://<em>chronograf.company</em>
 TOKEN_SECRET=<em>Your random secret</em>
 JWKS_URL=https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/jwks/
