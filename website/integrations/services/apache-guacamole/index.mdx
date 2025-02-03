@@ -3,7 +3,9 @@ title: Integrate with Apache Guacamole™
 sidebar_label: Apache Guacamole™
 ---
 
-import IntegrationsCodeblock from "@site/src/components/Integrations/IntegrationsCodeblock";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import IntegrationsMultilineCodeblock from "@site/src/components/Integrations/IntegrationsCodeblock";
 
 # Integrate with Apache Guacamole™
 
@@ -49,10 +51,6 @@ It is recommended to create an admin account in Guacamole before configuring Sin
 :::warning
 You can configure Apache Guacamole to use either the `sub` or `preferred_username` as the UID field under `user-name-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
 :::
-
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import IntegrationsMultilineCodeblock from "@site/src/components/Integrations/IntegrationsCodeblock";
 
 <Tabs
   defaultValue="docker"
