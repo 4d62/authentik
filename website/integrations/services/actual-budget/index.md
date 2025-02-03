@@ -61,9 +61,6 @@ The first user to log into Actual Budget via OpenID will become the owner and ad
 Users are not created automatically in Actual Budget. The owner must manually add users. To do this, go to **Server online** > **User Directory**, and create users matching their authentik usernames. Then, grant access to the budget via **User Access**.
 :::
 
-## Test the login
+## Configuration validation
 
-1. Open a browser and navigate to <kbd>https://<em>actual.company</em>/</kbd>.
-2. Select the OpenID login method in the dropdown menu and click **Sign in with OpenID**.
-3. You will be redirected to authentik to complete the login process, then back to Actual Budget.
-4. If you reach the budget selection page, the integration is successful.
+To confirm that authentik is properly configured with Actual Budget, visit your Actual Budget installation, select the OpenID login method from the dropdown menu, and click **Sign in with OpenID**.

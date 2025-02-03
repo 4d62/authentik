@@ -54,3 +54,7 @@ In the authentik Admin Interface, navigate to **Applications** > **Applications*
     - **JWKS URL** -> Certificate URL
 4. Click **Save**.
 5. Click **Test** to verify the login provider.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Cloudflare Access, click the **Test** button found right next-to the **Save** button from the previous step.

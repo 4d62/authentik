@@ -48,7 +48,7 @@ const IntegrationsMultilineCodeblock: React.FC<
             },
         );
 
-        return sanitizedText.replace(/\n\s+/g, "\n").trim();
+        return sanitizedText.trim();
     };
 
     const content: string = processContent(children);
