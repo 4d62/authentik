@@ -40,7 +40,7 @@ In the authentik Admin Interface, navigate to **Applications** > **Applications*
     - Select any available signing key.
 - **Configure Bindings** _(optional):_ you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user’s **My applications** page.
 
-## Budibase
+## Budibase configuration
 
 From the main page of your Budibase installation, add the following values under the **Auth** section of the builder:
 
