@@ -59,7 +59,7 @@ You can configure Apache Guacamole to use either the `sub` or `preferred_usernam
     { label: 'Standalone', value: 'standalone' },
   ]}>
   <TabItem value="docker">
-    Docker containers are often configured through environment variables. The following variables are required:
+Docker containers are typically configured using environment variables. To ensure proper integration, add the following variables to your `.env` file:
 
 <IntegrationsMultilineCodeblock>
     {`
@@ -69,6 +69,14 @@ OPENID_ISSUER=https://<em>authentik.company</em>/application/o/<em>your-slug</em
 OPENID_JWKS_ENDPOINT=https://<em>authentik.company</em>/application/o/<em>your-slug</em>/jwks/
 OPENID_REDIRECT_URI=https://<em>guacamole.company</em>/ # Must match Redirect URI in authentik
 OPENID_USERNAME_CLAIM_TYPE=preferred_username
+`}
+</IntegrationsMultilineCodeblock>
+
+Additionally, ensure your `guacamole.properties` file (typically located in `/etc/guacamole/`) includes the following line. This setting allows environment variables to be evaluated before static configuration files:
+
+<IntegrationsMultilineCodeblock>
+    {`
+enable-environment-properties: true
 `}
 </IntegrationsMultilineCodeblock>
 
@@ -89,6 +97,10 @@ openid-username-claim-type=preferred_username
 
   </TabItem>
 </Tabs>
+
+## References
+
+- [Apache Guacamole official documentation on OpenID Connect integrations](https://guacamole.apache.org/doc/gug/openid-auth.html#configuring-guacamole-for-single-sign-on-with-openid-connect)
 
 ## Configuration verification
 
