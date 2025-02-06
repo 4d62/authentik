@@ -53,7 +53,7 @@ In the authentik Admin Interface, navigate to **Applications** > **Applications*
 9. Set the **IdP Logout URL** to: <kbd>https://<em>authentik.company</em>/</kbd>
 10. In the **IdP Certificate** field, import your authentik certificate (either self-signed or valid).
 
-## References
+## Ressources
 
 - [Community post on the Fortinet forum](https://community.fortinet.com/t5/FortiAnalyzer/Technical-Tip-Configure-SAML-SSO-login-with-Azure-AD/ta-p/198324)
 

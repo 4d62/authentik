@@ -55,7 +55,7 @@ In the authentik Admin Interface, navigate to **Applications** > **Applications*
 4. Click **Save**.
 5. Click **Test** to verify the login provider.
 
-## References
+## Ressources
 
 - [Cloudflare Access Generic OIDC documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/generic-oidc/)
 

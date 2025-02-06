@@ -90,7 +90,7 @@ In the authentik Admin Interface, navigate to **Applications** > **Applications*
 4. **Save the Configuration**
     - Click the black **Save** button in the top-right corner to complete the setup.
 
-## References
+## Ressources
 
 - [Frappe's official OpenID Connect guide](https://docs.frappe.io/framework/user/en/guides/integration/openid_connect_and_frappe_social_login)
 
