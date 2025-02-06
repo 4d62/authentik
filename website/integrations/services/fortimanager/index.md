@@ -24,12 +24,21 @@ The following placeholders are used in this guide:
 This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
 :::
 
-1. From the **authentik Admin interface**, navigate to **Applications** -> **Applications**.
-2. Use the [wizard](https://docs.goauthentik.io/docs/add-secure-apps/applications/manage_apps#add-new-applications) to create a new application and a **SAML provider**. During this process:
-    - Note the **slug** as it will be required later.
+## authentik configuration
+
+To support the integration of FortiManager with authentik, you need to create an application/provider pair in authentik.
+
+**Create an application and provider in authentik**
+
+In the authentik Admin Interface, navigate to **Applications** > **Applications** and click **[Create with Provider](/docs/add-secure-apps/applications/manage_apps#add-new-applications)** to create an application and provider pair. (Alternatively, you can create only an application, without a provider, by clicking **Create**.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to <kbd>https://<em>fortimanager.company</em>/saml/?acs</kbd>.
     - Set the **Issuer** to <kbd>https://<em>authentik.company</em>/application/saml/<em>application-slug</em>/sso/binding/redirect/</kbd>.
     - Set the **Service Provider Binding** to `Post`.
+- **Configure Bindings** _(optional):_ you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user’s **My applications** page.
 
 ## FortiManager Configuration
 
@@ -43,3 +52,11 @@ This documentation only lists the settings that have been changed from their def
 8. Set the **IdP Login URL** to: <kbd>https://<em>authentik.company</em>/application/saml/<em>application-slug</em>/sso/binding/redirect/</kbd>
 9. Set the **IdP Logout URL** to: <kbd>https://<em>authentik.company</em>/</kbd>
 10. In the **IdP Certificate** field, import your authentik certificate (either self-signed or valid).
+
+## References
+
+- [Community post on the Fortinet forum](https://community.fortinet.com/t5/FortiAnalyzer/Technical-Tip-Configure-SAML-SSO-login-with-Azure-AD/ta-p/198324)
+
+## Configuration verification
+
+To confirm that authentik is properly configured with FortiManager, log out and log back in via authentik.
