@@ -21,9 +21,8 @@ This guide does _not_ cover Team Mapping. Please refer to EspoCRM's [documentati
 
 The following placeholders are used in this guide:
 
-- `crm.<your_company>` is the FQDN of the EspoCRM installation.
-- `authentik.<your_company>` is the FQDN of the authentik installation.
-- `_SLUG_` is the slug you choose upon application create in authentik.
+- `espocrm.company` is the FQDN of the EspoCRM installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -31,60 +30,41 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-1. Log into authentik as an admin, and navigate to **Applications** --> **Applications**.
-2. Click **Create with Wizard**.
+To support the integration of EspoCRM with authentik, you need to create an application/provider pair in authentik.
 
-:::info
-Alternatively, use our legacy process and click **Create**. The legacy process requires that the application and its configuration provider be configured separately.
-:::
+**Create an application and provider in authentik**
 
-3. In the _New Application_ wizard, define the application details, and then define the provider details with the following parameters:
+In the authentik Admin Interface, navigate to **Applications** > **Applications** and click **[Create with Provider](/docs/add-secure-apps/applications/manage_apps#add-new-applications)** to create an application and provider pair. (Alternatively, you can create only an application, without a provider, by clicking **Create**.)
 
-- **Provider Type**: `OAuth2/OIDC (Open Authorization/OpenID Connect)`
-
-- **Authorization Flow**: `default-provider-authorization-explicit-consent (Authorize Application)`
-- **Client Type**: `Confidential`
-- **Redirect URIs/Origins**: `https://crm.<your_company>/oauth-callback.php`
-- **Scopes**: OpenID, Email, Profile, Proxy outpost
-- **Subject Mode**: `Based on the User's username` (**OR** your preferred method; you can use the same username in authentik and EspoCRM)
-- **Signing Key**: Select any available key
-
-Note the `Client ID` and `Client Secret` values.
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>espocrm.company</em>/oauth-callback.php</kbd>.
+    - Select any available signing key.
+    - Under **Advanced Protocol Settings**, set **Subject mode** to be `Based on the Users's username`.
+- **Configure Bindings** _(optional):_ you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user’s **My applications** page.
 
 ## EspoCRM configuration
 
-### Access the OIDC auth
+To configure EspoCRM for OpenID Connect authentication, navigate to your instance and login as an administrator user. Then, navigate to **Administration** > **Authentication** and select the **OIDC method**. A panel allowing you to configure OIDC settings should appear.
 
-1. Login to your admin user at `crm.<your_company>`.
+Configure the following fields:
 
-2. In EspoCRM at Administration > Authentication, select the OIDC method. Below, on the same form, a OIDC panel will appear.
+- **Client ID**: The Client ID from authentik
+- **Client Secret**: The Client Secret from authentik
+- **Authorization Redirect URI**: <kbd>https://<em>espocrm.company</em>/oauth-callback.php</kbd>
+- **Fallback Login**: Toggle this option if you wish to have the option to use EspoCRM's integrated login as a fallback.
+- **Allow OIDC login for admin users**: Toggle this option if you wish to allow administrator users to log in with OIDC.
+- **Authorization Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/authorize</kbd>
+- **Token Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/token</kbd>
+- **JSON Web Key Set Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/jwks</em>
+- **Logout URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/end_session</em>
 
-### Configure the OIDC auth
+## References
 
-1. Configure the following variables:
+- [EspoCRM administrator documentation on OpenID Connect authentication](https://docs.espocrm.com/administration/oidc/)
 
-- **Client ID**: enter the `Client ID` from authentik
-- **Client Secret**: enter the `Client Secret` from authentik
-- **Authorization Redirect URI**: `https://crm.<your_company>/oauth-callback.php`
-- **Fallback Login**: _Select this option if you want EspoCRM's login as fallback._
-- **Allow OIDC login for admin users**: _Select this option if you want EspoCRM's admin users to be able to log in via OIDC._
+## Configuration verification
 
-    _The following values are listed as slugs for clarity. An example for the first variable is included._
-
-    You can also view the full URLs on the provider's page in authentik's Admin interface.
-
-- **Authorization Endpoint**: `/application/o/authorize/`
-    - (e.g. `https://crm.<your_company>/application/o/authorize/`)
-- **Token Endpoint**: `/application/o/token/`
-- **JSON Web Key Set Endpoint**: `/application/o/_SLUG_/jwks/`
-- **Logout URL**: `application/o/_SLUG_/end-session/`
-
-### Confirm the configuration
-
-1. Select the `Save` option.
-
-2. Access your EspoCRM instance (e.g. `crm.<your_company>`) in a private browser, and select `Sign In.`
-
-- You will be presented with your authentik log-in screen.
-
-- Enter your authentik credentials to proceed to EspoCRM!
+To confirm that authentik is properly configured with EspoCRM, log out and log back in via authentik. Clicking the "Login" button on the homepage should redirect you to authentik.
