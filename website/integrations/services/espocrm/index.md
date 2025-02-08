@@ -58,7 +58,7 @@ Configure the following fields:
 - **Allow OIDC login for admin users**: Toggle this option if you wish to allow administrator users to log in with OIDC.
 - **Authorization Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/authorize</kbd>
 - **Token Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/token</kbd>
-- **JSON Web Key Set Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/jwks</em>
+- **JSON Web Key Set Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/jwks</kbd>
 - **Logout URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/end_session</em>
 
 ## Ressources
