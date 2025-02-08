@@ -59,7 +59,7 @@ Configure the following fields:
 - **Authorization Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/authorize</kbd>
 - **Token Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/token</kbd>
 - **JSON Web Key Set Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/jwks</kbd>
-- **Logout URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/end_session</em>
+- **Logout URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/end_session</kbd>
 
 ## Ressources
 

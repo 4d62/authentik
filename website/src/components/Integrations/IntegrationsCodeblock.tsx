@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, isValidElement } from "react";
+import React, { ReactNode, useState, isValidElement, useCallback } from "react";
 
 type IntegrationsMultilineCodeblockProps = {
     children: ReactNode;
@@ -22,7 +22,7 @@ const IntegrationsMultilineCodeblock: React.FC<
         className: "",
     });
 
-    const getTextContent = (nodes: ReactNode): string => {
+    const getTextContent = useCallback((nodes: ReactNode): string => {
         return React.Children.toArray(nodes).reduce((acc: string, node) => {
             if (typeof node === "string") {
                 return acc + node;
@@ -33,23 +33,26 @@ const IntegrationsMultilineCodeblock: React.FC<
             }
             return acc;
         }, "");
-    };
+    }, []);
 
-    const processContent: ContentProcessor = (children) => {
-        const text = getTextContent(children);
+    const processContent: ContentProcessor = useCallback(
+        (children) => {
+            const text = getTextContent(children);
 
-        const sanitizedText = text.replace(
-            /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
-            (match, tag) => {
-                if (allowedTags.includes(tag.toLowerCase())) {
-                    return match;
-                }
-                return "";
-            },
-        );
+            const sanitizedText = text.replace(
+                /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+                (match, tag) => {
+                    if (allowedTags.includes(tag.toLowerCase())) {
+                        return match;
+                    }
+                    return "";
+                },
+            );
 
-        return sanitizedText.trim();
-    };
+            return sanitizedText.trim();
+        },
+        [getTextContent],
+    );
 
     const content: string = processContent(children);
 
@@ -62,10 +65,9 @@ const IntegrationsMultilineCodeblock: React.FC<
             });
 
             setTimeout(() => {
-                setCopyState({
-                    isCopied: false,
-                    className: "",
-                });
+                setCopyState((prev) =>
+                    prev.isCopied ? { isCopied: false, className: "" } : prev,
+                );
             }, 2000);
         } catch (error) {
             console.error("Failed to copy content:", error);
@@ -77,30 +79,28 @@ const IntegrationsMultilineCodeblock: React.FC<
         path: string;
     };
 
-    const Icon: React.FC<IconProps> = ({ className, path }) => (
+    const Icon: React.FC<IconProps> = React.memo(({ className, path }) => (
         <svg viewBox="0 0 24 24" className={className}>
             <path fill="currentColor" d={path} />
         </svg>
-    );
+    ));
 
     return (
         <pre className={`integration-codeblock ${className}`.trim()}>
-            {typeof children === "string" ? (
-                <code
-                    className="integration-codeblock__content"
-                    dangerouslySetInnerHTML={{ __html: content }}
-                />
-            ) : (
-                <code className="integration-codeblock__content">
-                    {children}
-                </code>
-            )}
+            <code className="integration-codeblock__content">
+                {typeof children === "string" ? (
+                    <span dangerouslySetInnerHTML={{ __html: content }} />
+                ) : (
+                    children
+                )}
+            </code>
             <button
                 onClick={handleCopy}
                 className={`integration-codeblock__copy-btn ${copyState.className}`.trim()}
                 aria-label="Copy code to clipboard"
                 title="Copy"
                 type="button"
+                disabled={copyState.isCopied}
             >
                 <span
                     className="integration-codeblock__copy-icons"
